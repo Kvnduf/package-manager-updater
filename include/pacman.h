@@ -12,12 +12,18 @@
 typedef struct {
    char name[PACMAN_NAME_MAX];
    char name_cmd[PACMAN_MAX_LINE_LENGTH];
-   char update_cmd[PACMAN_MAX_LINE_LENGTH];
    char upgrade_cmd[PACMAN_MAX_LINE_LENGTH];
    char clean_orphans_cmd[PACMAN_MAX_LINE_LENGTH];
    char clean_cache_cmd[PACMAN_MAX_LINE_LENGTH];
 } pacman_t;
 
+void init_pacman(pacman_t* pacman);
+
+int set_name(pacman_t* pacman, const char* name);
+int set_name_cmd(pacman_t* pacman, const char* name_cmd);
+int set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd);
+int set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd);
+int set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd);
 
 void to_string(pacman_t* pacman, char* buffer, size_t buffer_size);
 
