@@ -25,7 +25,7 @@ int set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd);
 int set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd);
 int set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd);
 
-void to_string(pacman_t* pacman, char* buffer, size_t buffer_size);
+void pacman_to_string(pacman_t* pacman, char* buffer, size_t buffer_size);
 
 
 #endif // __PACMAN__H__

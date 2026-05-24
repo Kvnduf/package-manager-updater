@@ -27,8 +27,8 @@ int set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd){
     return secure_strncpy(pacman->clean_cache_cmd, clean_cache_cmd, sizeof(pacman->clean_cache_cmd));
 }
 
-void to_string(pacman_t* pacman, char* buffer, size_t buffer_size) {
-    snprintf(buffer, buffer_size, "Pacman struct :\nname: %s\nname_cmd: %s\nupgrade_cmd: %s\nclean_orphans_cmd: %s\nclean_cache_cmd: %s\n\n",
+void pacman_to_string(pacman_t* pacman, char* buffer, size_t buffer_size) {
+    snprintf(buffer, buffer_size, "Pacman struct :\nname: %s\nnameCmd: %s\nupgradeCmd: %s\ncleanOrphansCmd: %s\ncleanCacheCmd: %s\n\n",
         pacman->name, pacman->name_cmd, pacman->upgrade_cmd, pacman->clean_orphans_cmd, pacman->clean_cache_cmd);
 }
 
