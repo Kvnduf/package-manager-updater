@@ -7,13 +7,7 @@
 #define MAX_PACMANS 32
 
 
-static const char *PACMAN_FIELDS[PACMAN_NB_FIELDS] = {
-    "name",
-    "nameCmd",
-    "upgradeCmd",
-    "cleanOrphansCmd",
-    "cleanCacheCmd"
-};
+extern const char *const PACMAN_FIELDS[PACMAN_NB_FIELDS];
 
 /**
  * @brief reads pacmans from a json file with a specific format

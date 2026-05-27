@@ -3,6 +3,14 @@
 #include "utils.h"
 
 
+const char *const PACMAN_FIELDS[PACMAN_NB_FIELDS] = {
+    [PACMAN_NAME] = "name",
+    [PACMAN_NAME_CMD] = "nameCmd",
+    [PACMAN_UPGRADE_CMD] = "upgradeCmd",
+    [PACMAN_CLEAN_ORPHANS_CMD] = "cleanOrphansCmd",
+    [PACMAN_CLEAN_CACHE_CMD] = "cleanCacheCmd"
+};
+
 static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
     if (!json || !pacman) return -1;
 
