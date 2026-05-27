@@ -3,30 +3,23 @@
 #include "utils.h"
 
 
+const char *const PACMAN_FIELDS[PACMAN_NB_FIELDS] = {
+    [PACMAN_NAME] = "name",
+    [PACMAN_NAME_CMD] = "nameCmd",
+    [PACMAN_UPGRADE_CMD] = "upgradeCmd",
+    [PACMAN_CLEAN_ORPHANS_CMD] = "cleanOrphansCmd",
+    [PACMAN_CLEAN_CACHE_CMD] = "cleanCacheCmd"
+};
+
 static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
     if (!json || !pacman) return -1;
-    const cJSON* name = cJSON_GetObjectItemCaseSensitive(json, PACMAN_NAME);
-    const cJSON* nameCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_NAME_CMD);
-    const cJSON* upgradeCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_UPGRADE_CMD);
-    const cJSON* cleanOrphansCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_CLEAN_ORPHANS_CMD);
-    const cJSON* cleanCacheCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_CLEAN_CACHE_CMD);
 
-    pacman_init(pacman);
-
-    if (cJSON_IsString(name)) pacman_set_name(pacman, name->valuestring);
-    else return 1;
-
-    if (cJSON_IsString(nameCmd)) pacman_set_name_cmd(pacman, nameCmd->valuestring);
-    else return 1;
-
-    if (cJSON_IsString(upgradeCmd)) pacman_set_upgrade_cmd(pacman, upgradeCmd->valuestring);
-    else return 1;
-
-    if (cJSON_IsString(cleanOrphansCmd)) pacman_set_clean_orphans_cmd(pacman, cleanOrphansCmd->valuestring);
-    else return 1;
-
-    if (cJSON_IsString(cleanCacheCmd)) pacman_set_clean_cache_cmd(pacman, cleanCacheCmd->valuestring);
-    else return 1;
+    cJSON* field = NULL;
+    for (int i = 0; i < PACMAN_NB_FIELDS; i++) {
+        field = cJSON_GetObjectItemCaseSensitive(json, PACMAN_FIELDS[i]);
+        if (!field || !cJSON_IsString(field)) return 1;
+        if (pacman_set_field(pacman, i, field->valuestring) != 0) return -1;
+    }
 
     return 0;
 }
