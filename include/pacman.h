@@ -18,16 +18,16 @@ typedef enum {
    PACMAN_CLEAN_ORPHANS_CMD,
    PACMAN_CLEAN_CACHE_CMD,
    
-   PACMAN_NB_FIELDS
-} pacman_field_t;
+   PACMAN_NB_COMMAND
+} pacman_command_t;
 
 typedef struct {
-   char fields[PACMAN_NB_FIELDS][PACMAN_MAX_LINE_LENGTH];
+   char commands[PACMAN_NB_COMMAND][PACMAN_MAX_LINE_LENGTH];
 } pacman_t;
 
 void pacman_init(pacman_t* pacman);
 
-int pacman_set_field(pacman_t* pacman, pacman_field_t field, const char* value);
+int pacman_set_command(pacman_t* pacman, pacman_command_t command, const char* value);
 
 /**
  * @brief Converts a pacman struct to a string representation and stores it in the provided buffer.
