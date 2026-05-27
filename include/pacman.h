@@ -9,21 +9,25 @@
  * @brief Struct representing a package manager with its name and associated commands.
  * 
  */
+
+
+typedef enum {
+   PACMAN_NAME,
+   PACMAN_NAME_CMD,
+   PACMAN_UPGRADE_CMD,
+   PACMAN_CLEAN_ORPHANS_CMD,
+   PACMAN_CLEAN_CACHE_CMD,
+   
+   PACMAN_NB_FIELDS
+} pacman_field_t;
+
 typedef struct {
-   char name[PACMAN_NAME_MAX];
-   char name_cmd[PACMAN_MAX_LINE_LENGTH];
-   char upgrade_cmd[PACMAN_MAX_LINE_LENGTH];
-   char clean_orphans_cmd[PACMAN_MAX_LINE_LENGTH];
-   char clean_cache_cmd[PACMAN_MAX_LINE_LENGTH];
+   char fields[PACMAN_NB_FIELDS][PACMAN_MAX_LINE_LENGTH];
 } pacman_t;
 
 void pacman_init(pacman_t* pacman);
 
-int pacman_set_name(pacman_t* pacman, const char* name);
-int pacman_set_name_cmd(pacman_t* pacman, const char* name_cmd);
-int pacman_set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd);
-int pacman_set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd);
-int pacman_set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd);
+int pacman_set_field(pacman_t* pacman, pacman_field_t field, const char* value);
 
 /**
  * @brief Converts a pacman struct to a string representation and stores it in the provided buffer.

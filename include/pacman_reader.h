@@ -6,12 +6,14 @@
 
 #define MAX_PACMANS 32
 
-#define PACMAN_NAME "name"
-#define PACMAN_NAME_CMD "nameCmd"
-#define PACMAN_UPGRADE_CMD "upgradeCmd"
-#define PACMAN_CLEAN_ORPHANS_CMD "cleanOrphansCmd"
-#define PACMAN_CLEAN_CACHE_CMD "cleanCacheCmd"
 
+static const char *PACMAN_FIELDS[PACMAN_NB_FIELDS] = {
+    "name",
+    "nameCmd",
+    "upgradeCmd",
+    "cleanOrphansCmd",
+    "cleanCacheCmd"
+};
 
 /**
  * @brief reads pacmans from a json file with a specific format
