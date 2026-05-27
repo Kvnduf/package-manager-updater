@@ -5,15 +5,20 @@
 #include <stdio.h>
 
 
-void secure_free(void* ptr) {
+void safe_free(void* ptr) {
     if (ptr != NULL) free(ptr);
 }
 
 int secure_strncpy(char *dest, const char *src, size_t dest_size) {
+    size_t src_len;
+    size_t copy_len;
     if (!dest || !src || dest_size == 0) return -1;
-
-    strncpy(dest, src, dest_size - 1);
-    dest[dest_size - 1] = '\0';
+    
+    src_len = strnlen(src, dest_size);
+    copy_len = (src_len < dest_size) ? src_len : (dest_size - 1);
+    memcpy(dest, src, copy_len);
+    dest[copy_len] = '\0';
+    if (src_len == dest_size) return -1;
     return 0;
 }
 

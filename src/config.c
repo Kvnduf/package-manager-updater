@@ -6,7 +6,7 @@ int get_config_dir_path(char buffer[MAX_PATH_LENGTH]) {
     if (!buffer) return -1;
     const char* home = getenv("HOME");
     if (home == NULL) return -1;
-    int n =snprintf(buffer, MAX_PATH_LENGTH, "%s%s%s%s%s", home, FILE_SEP, ".config", FILE_SEP, CONFIG_DIRNAME);
+    int n = snprintf(buffer, MAX_PATH_LENGTH, "%s%s%s%s%s", home, FILE_SEP, ".config", FILE_SEP, CONFIG_DIRNAME);
     if (n < 0 || n >= MAX_PATH_LENGTH) return -1;
     return 0;
 }

@@ -5,11 +5,11 @@
 
 static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
     if (!json || !pacman) return -1;
-    const cJSON* name = cJSON_GetObjectItem(json, PACMAN_NAME);
-    const cJSON* nameCmd = cJSON_GetObjectItem(json, PACMAN_NAME_CMD);
-    const cJSON* upgradeCmd = cJSON_GetObjectItem(json, PACMAN_UPGRADE_CMD);
-    const cJSON* cleanOrphansCmd = cJSON_GetObjectItem(json, PACMAN_CLEAN_ORPHANS_CMD);
-    const cJSON* cleanCacheCmd = cJSON_GetObjectItem(json, PACMAN_CLEAN_CACHE_CMD);
+    const cJSON* name = cJSON_GetObjectItemCaseSensitive(json, PACMAN_NAME);
+    const cJSON* nameCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_NAME_CMD);
+    const cJSON* upgradeCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_UPGRADE_CMD);
+    const cJSON* cleanOrphansCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_CLEAN_ORPHANS_CMD);
+    const cJSON* cleanCacheCmd = cJSON_GetObjectItemCaseSensitive(json, PACMAN_CLEAN_CACHE_CMD);
 
     pacman_init(pacman);
 
@@ -73,7 +73,7 @@ int read_pacmans_from_file(const char* file_path, pacman_t pacmans[], size_t* nb
     }
 
 cleanup:
-    secure_free(json_str);
+    safe_free(json_str);
     if (json != NULL) cJSON_Delete(json);
     return res;
 }
