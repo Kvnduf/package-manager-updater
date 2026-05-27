@@ -31,8 +31,8 @@ LIB_CJSON_SRC_DIR = $(LIB_CJSON_DIR)/$(SRC_DIR)
 LIB_CJSON_OBJ_DIR = $(LIB_CJSON_DIR)/$(OBJ_DIR)
 LIB_CJSON_BIN_DIR = $(LIB_CJSON_DIR)/$(BIN_DIR)
 
-$(shell mkdir -p $(LIB_CJSON_OBJ_DIR))
-$(shell mkdir -p $(LIB_CJSON_BIN_DIR))
+$(LIB_CJSON_OBJ_DIR)  $(LIB_CJSON_BIN_DIR) : 
+	mkdir -p $@
 
 LDFLAGS += -L$(LIB_CJSON_BIN_DIR) -lcjson
 CPPFLAGS += -I$(LIB_CJSON_INCLUDE_DIR)
@@ -41,21 +41,22 @@ LIB_CJSON_TARGET_PATH = $(LIB_CJSON_BIN_DIR)/$(LIB_CJSON_TARGET)
 LIB_CJSON_SRCS = $(wildcard $(LIB_CJSON_SRC_DIR)/*.c)
 LIB_CJSON_OBJS = $(LIB_CJSON_SRCS:$(LIB_CJSON_SRC_DIR)/%.c=$(LIB_CJSON_OBJ_DIR)/%.o)
 
-$(LIB_CJSON_OBJ_DIR)/%.o: $(LIB_CJSON_SRC_DIR)/%.c
+$(LIB_CJSON_OBJ_DIR)/%.o: $(LIB_CJSON_SRC_DIR)/%.c | $(LIB_CJSON_OBJ_DIR)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(LIB_CJSON_INCLUDE_DIR) -c $< -o $@
 
-$(LIB_CJSON_TARGET_PATH): $(LIB_CJSON_OBJS)
+$(LIB_CJSON_TARGET_PATH): $(LIB_CJSON_OBJS) | $(LIB_CJSON_BIN_DIR)
 	ar rcs $@ $^
 
 ### Main build rules
 
-$(shell mkdir -p $(OBJ_DIR))
-$(shell mkdir -p $(BIN_DIR))
+$(BIN_DIR) $(OBJ_DIR) : 
+	mkdir -p $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
-$(TARGET_PATH): $(LIB_CJSON_TARGET_PATH) $(OBJS)
+$(TARGET_PATH): $(LIB_CJSON_TARGET_PATH) $(OBJS) | $(BIN_DIR)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 
 run: all

@@ -25,7 +25,15 @@ int pacman_set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd);
 int pacman_set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd);
 int pacman_set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd);
 
-void pacman_to_string(pacman_t* pacman, char* buffer, size_t buffer_size);
+/**
+ * @brief Converts a pacman struct to a string representation and stores it in the provided buffer.
+ * 
+ * @param pacman  the pacman struct to convert
+ * @param buffer  the buffer to store the string representation
+ * @param buffer_size  the size of the buffer
+ * @return int  0 on success, -1 on failure
+ */
+int pacman_to_string(pacman_t* pacman, char* buffer, size_t buffer_size);
 
 
 #endif // PACMAN_H

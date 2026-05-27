@@ -19,7 +19,7 @@ int secure_strncpy(char *dest, const char *src, size_t dest_size) {
 
 
 char* read_file(const char* file_path) {
-    FILE* file = fopen(file_path, "r");
+    FILE* file = fopen(file_path, "rb");
     if (!file) return NULL;
 
     if (0 != fseek(file, 0, SEEK_END)) {
@@ -31,23 +31,24 @@ char* read_file(const char* file_path) {
         fclose(file);
         return NULL;
     }
+    size_t size = (size_t)length;
     if (0 != fseek(file, 0, SEEK_SET)) {
         fclose(file);
         return NULL;
     }
 
-    char* buffer = malloc(length + 1);
+    char* buffer = malloc(size + 1);
     if (!buffer) {
         fclose(file);
         return NULL;
     }
 
-    if (fread(buffer, 1, length, file) != (size_t)length) {
+    if (fread(buffer, 1, size, file) != size) {
         free(buffer);
         fclose(file);
         return NULL;
     }
-    buffer[length] = '\0';
+    buffer[size] = '\0';
 
     fclose(file);
     return buffer;

@@ -6,11 +6,11 @@
 
 #define MAX_PACMANS 32
 
-#define NAME "name"
-#define NAME_CMD "nameCmd"
-#define UPGRADE_CMD "upgradeCmd"
-#define CLEAN_ORPHANS_CMD "cleanOrphansCmd"
-#define CLEAN_CACHE_CMD "cleanCacheCmd"
+#define PACMAN_NAME "name"
+#define PACMAN_NAME_CMD "nameCmd"
+#define PACMAN_UPGRADE_CMD "upgradeCmd"
+#define PACMAN_CLEAN_ORPHANS_CMD "cleanOrphansCmd"
+#define PACMAN_CLEAN_CACHE_CMD "cleanCacheCmd"
 
 
 /**
