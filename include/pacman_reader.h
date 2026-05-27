@@ -1,5 +1,5 @@
-#ifndef __PACMAN_READER__H__
-#define __PACMAN_READER__H__
+#ifndef PACMAN_READER_H
+#define PACMAN_READER_H
 
 #include "pacman.h"
 #include "config.h"

@@ -3,10 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/stat.h>
 
 
-inline void secure_free(void* ptr) {
+void secure_free(void* ptr) {
     if (ptr != NULL) free(ptr);
 }
 
@@ -23,9 +22,19 @@ char* read_file(const char* file_path) {
     FILE* file = fopen(file_path, "r");
     if (!file) return NULL;
 
-    fseek(file, 0, SEEK_END);
+    if (0 != fseek(file, 0, SEEK_END)) {
+        fclose(file);
+        return NULL;
+    }
     long length = ftell(file);
-    fseek(file, 0, SEEK_SET);
+    if (length < 0) {
+        fclose(file);
+        return NULL;
+    }
+    if (0 != fseek(file, 0, SEEK_SET)) {
+        fclose(file);
+        return NULL;
+    }
 
     char* buffer = malloc(length + 1);
     if (!buffer) {
@@ -33,7 +42,11 @@ char* read_file(const char* file_path) {
         return NULL;
     }
 
-    fread(buffer, 1, length, file);
+    if (fread(buffer, 1, length, file) != (size_t)length) {
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
     buffer[length] = '\0';
 
     fclose(file);

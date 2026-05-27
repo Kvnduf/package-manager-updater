@@ -1,9 +1,9 @@
 #include "pacman.h"
-#include <string.h>
 #include <stdio.h>
 #include "utils.h"
 
-void init_pacman(pacman_t* pacman) {
+void pacman_init(pacman_t* pacman) {
+    if (!pacman) return;
     pacman->name[0] = '\0';
     pacman->name_cmd[0] = '\0';
     pacman->upgrade_cmd[0] = '\0';
@@ -11,19 +11,19 @@ void init_pacman(pacman_t* pacman) {
     pacman->clean_cache_cmd[0] = '\0';
 }
 
-int set_name(pacman_t* pacman, const char* name){
+int pacman_set_name(pacman_t* pacman, const char* name){
     return secure_strncpy(pacman->name, name, sizeof(pacman->name));
 }
-int set_name_cmd(pacman_t* pacman, const char* name_cmd){
+int pacman_set_name_cmd(pacman_t* pacman, const char* name_cmd){
     return secure_strncpy(pacman->name_cmd, name_cmd, sizeof(pacman->name_cmd));
 }
-int set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd){
+int pacman_set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd){
     return secure_strncpy(pacman->upgrade_cmd, upgrade_cmd, sizeof(pacman->upgrade_cmd));
 }
-int set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd){
+int pacman_set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd){
     return secure_strncpy(pacman->clean_orphans_cmd, clean_orphans_cmd, sizeof(pacman->clean_orphans_cmd));
 }
-int set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd){
+int pacman_set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd){
     return secure_strncpy(pacman->clean_cache_cmd, clean_cache_cmd, sizeof(pacman->clean_cache_cmd));
 }
 

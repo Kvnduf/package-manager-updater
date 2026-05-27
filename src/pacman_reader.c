@@ -1,9 +1,6 @@
 #include "pacman_reader.h"
-
-#include <stdio.h>
 #include "cJSON.h"
 #include "utils.h"
-#include <string.h>
 
 
 static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
@@ -13,27 +10,28 @@ static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
     const cJSON* cleanOrphansCmd = cJSON_GetObjectItem(json, CLEAN_ORPHANS_CMD);
     const cJSON* cleanCacheCmd = cJSON_GetObjectItem(json, CLEAN_CACHE_CMD);
 
-    init_pacman(pacman);
+    pacman_init(pacman);
 
-    if (cJSON_IsString(name)) set_name(pacman, name->valuestring);
+    if (cJSON_IsString(name)) pacman_set_name(pacman, name->valuestring);
     else return 1;
 
-    if (cJSON_IsString(nameCmd)) set_name_cmd(pacman, nameCmd->valuestring);
+    if (cJSON_IsString(nameCmd)) pacman_set_name_cmd(pacman, nameCmd->valuestring);
     else return 1;
 
-    if (cJSON_IsString(upgradeCmd)) set_upgrade_cmd(pacman, upgradeCmd->valuestring);
+    if (cJSON_IsString(upgradeCmd)) pacman_set_upgrade_cmd(pacman, upgradeCmd->valuestring);
     else return 1;
 
-    if (cJSON_IsString(cleanOrphansCmd)) set_clean_orphans_cmd(pacman, cleanOrphansCmd->valuestring);
+    if (cJSON_IsString(cleanOrphansCmd)) pacman_set_clean_orphans_cmd(pacman, cleanOrphansCmd->valuestring);
     else return 1;
 
-    if (cJSON_IsString(cleanCacheCmd)) set_clean_cache_cmd(pacman, cleanCacheCmd->valuestring);
+    if (cJSON_IsString(cleanCacheCmd)) pacman_set_clean_cache_cmd(pacman, cleanCacheCmd->valuestring);
     else return 1;
 
     return 0;
 }
 
 int read_pacmans_from_file(const char* file_path, pacman_t pacmans[], size_t* nb_pacmans) {
+    if (!pacmans || !nb_pacmans || !file_path) return -1;
     int res = 0;
     char* json_str = NULL;
     cJSON* json = NULL;

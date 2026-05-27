@@ -1,5 +1,5 @@
-#ifndef __PACMAN__H__
-#define __PACMAN__H__
+#ifndef PACMAN_H
+#define PACMAN_H
 #include <stddef.h>
 
 #define PACMAN_NAME_MAX 32
@@ -17,16 +17,16 @@ typedef struct {
    char clean_cache_cmd[PACMAN_MAX_LINE_LENGTH];
 } pacman_t;
 
-void init_pacman(pacman_t* pacman);
+void pacman_init(pacman_t* pacman);
 
-int set_name(pacman_t* pacman, const char* name);
-int set_name_cmd(pacman_t* pacman, const char* name_cmd);
-int set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd);
-int set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd);
-int set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd);
+int pacman_set_name(pacman_t* pacman, const char* name);
+int pacman_set_name_cmd(pacman_t* pacman, const char* name_cmd);
+int pacman_set_upgrade_cmd(pacman_t* pacman, const char* upgrade_cmd);
+int pacman_set_clean_orphans_cmd(pacman_t* pacman, const char* clean_orphans_cmd);
+int pacman_set_clean_cache_cmd(pacman_t* pacman, const char* clean_cache_cmd);
 
 void pacman_to_string(pacman_t* pacman, char* buffer, size_t buffer_size);
 
 
-#endif // __PACMAN__H__
+#endif // PACMAN_H
 

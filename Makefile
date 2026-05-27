@@ -42,7 +42,7 @@ LIB_CJSON_SRCS = $(wildcard $(LIB_CJSON_SRC_DIR)/*.c)
 LIB_CJSON_OBJS = $(LIB_CJSON_SRCS:$(LIB_CJSON_SRC_DIR)/%.c=$(LIB_CJSON_OBJ_DIR)/%.o)
 
 $(LIB_CJSON_OBJ_DIR)/%.o: $(LIB_CJSON_SRC_DIR)/%.c
-	$(CC) -I$(LIB_CJSON_INCLUDE_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(LIB_CJSON_INCLUDE_DIR) -c $< -o $@
 
 $(LIB_CJSON_TARGET_PATH): $(LIB_CJSON_OBJS)
 	ar rcs $@ $^
@@ -53,10 +53,10 @@ $(shell mkdir -p $(OBJ_DIR))
 $(shell mkdir -p $(BIN_DIR))
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 $(TARGET_PATH): $(LIB_CJSON_TARGET_PATH) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 
 run: all
 	./$(TARGET_PATH)

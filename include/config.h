@@ -1,5 +1,5 @@
-#ifndef __CONFIG__H__
-#define __CONFIG__H__
+#ifndef CONFIG_H
+#define CONFIG_H
 
 
 #define MAX_PATH_LENGTH 512
@@ -9,9 +9,21 @@
 
 #define FILE_SEP "/"
 
-int get_config_dir_path(char buffer[]);
+/**
+ * @brief Get the config dir path object
+ * @param buffer the buffer to fill with the config dir path, must be at least MAX_PATH_LENGTH bytes long
+ * @return int  0 if success, -1 if an error occurred
+ */
+int get_config_dir_path(char buffer[MAX_PATH_LENGTH]);
 
-int get_path_from_config_dir(const char* filename, char buffer[]);
+/**
+ * @brief Get the path from config dir object
+ * 
+ * @param filename  the name of the file in the config dir
+ * @param buffer  the buffer to fill with the path, must be at least MAX_PATH_LENGTH bytes long
+ * @return int  0 if success, -1 if an error occurred
+ */
+int get_path_from_config_dir(const char* filename, char buffer[MAX_PATH_LENGTH]);
 
-#endif // __CONFIG__H__
+#endif // CONFIG_H
 
