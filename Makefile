@@ -11,8 +11,8 @@ BIN_DIR = bin
 
 TARGET = updater
 
-CFLAGS = -Wall -Wextra -O2
-CPPFLAGS = -I$(INCLUDE_DIR)
+CFLAGS += -Wall -Wextra -O2
+CPPFLAGS += -I$(INCLUDE_DIR)
 
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -48,6 +48,11 @@ $(LIB_CJSON_TARGET_PATH): $(LIB_CJSON_OBJS) | $(LIB_CJSON_BIN_DIR)
 	ar rcs $@ $^
 
 ### Main build rules
+
+ifdef debug
+CFLAGS += -g
+CPPFLAGS += -DDEBUG
+endif
 
 $(BIN_DIR) $(OBJ_DIR) : 
 	mkdir -p $@

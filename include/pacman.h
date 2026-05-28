@@ -11,8 +11,8 @@
  */
 
 
+
 typedef enum {
-   PACMAN_NAME_CMD,
    PACMAN_UPGRADE_CMD,
    PACMAN_CLEAN_ORPHANS_CMD,
    PACMAN_CLEAN_CACHE_CMD,
@@ -22,12 +22,15 @@ typedef enum {
 
 typedef struct {
    char name[PACMAN_NAME_MAX];
+   char nameCmd[PACMAN_MAX_LINE_LENGTH];
    char commands[PACMAN_NB_COMMAND][PACMAN_MAX_LINE_LENGTH];
 } pacman_t;
 
 void pacman_init(pacman_t* pacman);
 
 int pacman_set_name(pacman_t* pacman, const char* name);
+
+int pacman_set_nameCmd(pacman_t* pacman, const char* value);
 
 int pacman_set_command(pacman_t* pacman, pacman_command_t command, const char* value);
 
