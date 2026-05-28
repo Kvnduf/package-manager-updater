@@ -7,7 +7,7 @@
 #define MAX_PACMANS 32
 
 
-extern const char *const PACMAN_FIELDS[PACMAN_NB_FIELDS];
+
 
 /**
  * @brief reads pacmans from a json file with a specific format

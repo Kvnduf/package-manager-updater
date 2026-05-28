@@ -1,24 +1,26 @@
 #include "pacman_reader.h"
+#include "json_primitive_binding.h"
 #include "cJSON.h"
 #include "utils.h"
 
 
-const char *const PACMAN_FIELDS[PACMAN_NB_FIELDS] = {
-    [PACMAN_NAME] = "name",
-    [PACMAN_NAME_CMD] = "nameCmd",
-    [PACMAN_UPGRADE_CMD] = "upgradeCmd",
-    [PACMAN_CLEAN_ORPHANS_CMD] = "cleanOrphansCmd",
-    [PACMAN_CLEAN_CACHE_CMD] = "cleanCacheCmd"
-};
+
 
 static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
     if (!json || !pacman) return -1;
+    
+    json_primitive_binding_t expected_fields[] = {
+        {"name", JSON_STRING, pacman->name, sizeof(pacman->name)},
+        {"nameCmd", JSON_STRING, pacman->commands[PACMAN_NAME_CMD], sizeof(pacman->commands[PACMAN_NAME_CMD])},
+        {"upgradeCmd", JSON_STRING, pacman->commands[PACMAN_UPGRADE_CMD], sizeof(pacman->commands[PACMAN_UPGRADE_CMD])},
+        {"cleanOrphansCmd", JSON_STRING, pacman->commands[PACMAN_CLEAN_ORPHANS_CMD], sizeof(pacman->commands[PACMAN_CLEAN_ORPHANS_CMD])},
+        {"cleanCacheCmd", JSON_STRING, pacman->commands[PACMAN_CLEAN_CACHE_CMD], sizeof(pacman->commands[PACMAN_CLEAN_CACHE_CMD])}
+    };
 
-    cJSON* field = NULL;
-    for (int i = 0; i < PACMAN_NB_FIELDS; i++) {
-        field = cJSON_GetObjectItemCaseSensitive(json, PACMAN_FIELDS[i]);
-        if (!field || !cJSON_IsString(field)) return 1;
-        if (pacman_set_field(pacman, i, field->valuestring) != 0) return -1;
+    for (size_t i = 0; i < sizeof(expected_fields) / sizeof(expected_fields[0]); i++) {
+        if (json_primitive_binding_deserialize(json, &expected_fields[i]) != 0) {
+            return 1;
+        }
     }
 
     return 0;
