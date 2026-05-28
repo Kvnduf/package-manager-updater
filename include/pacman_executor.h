@@ -6,7 +6,7 @@
 typedef struct 
 {
     void (*on_pacman_found_and_start_execution)(const char* pacman_name);
-    void (*on_pacman_not_found)();
+    void (*on_pacman_not_found)(void);
     void (*on_command_exec)(const pacman_command_t command);
     void (*on_command_execution_error)(const int error_code);
     void (*on_command_execution_success)(void);

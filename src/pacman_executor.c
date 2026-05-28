@@ -1,6 +1,8 @@
 #include "pacman_executor.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/wait.h>
+#include <stdbool.h>
 
 #define SECURE_CALL(fmt, ...) if (fmt) {fmt(__VA_ARGS__);}
 
@@ -58,14 +60,18 @@ static int pacman_execute(pacman_t* pacman, const pacman_executor_feedback_t* fe
     /* CLEAN CACHE */
     res = pacman_execute_command(pacman, PACMAN_CLEAN_CACHE_CMD, feedback);
     if (res != 0) return res;
+    return 0;
+
 }
 
 int pacmans_execute(pacman_t pacman[], size_t nb_pacmans, const pacman_executor_feedback_t* feedback) {
     if (!pacman || nb_pacmans == 0) return -1;
     if (!feedback) feedback = &default_feedback;
+    bool had_nonfatal_failure = false;
     for (size_t i = 0; i < nb_pacmans; i++) {
         int res = pacman_execute(&pacman[i], feedback);
         if (res == -1) return -1;
+        if (res != 0) had_nonfatal_failure = true;
     }
-    return 0;
+    return had_nonfatal_failure ? 1 : 0;
 }
