@@ -9,6 +9,8 @@
 #include "utils.h"
 #include "pacman_reader.h"
 #include <stdbool.h>
+#include <errno.h> 
+#include <sys/wait.h>
 
 
 /* Define feedback functions for pacman_executor */
@@ -29,10 +31,15 @@
 
 void on_pacman_found_and_start_execution(const char* pacman_name) {
     struct winsize w;
+    int term_width = 80;
 
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
-    int n = (w.ws_col - 16 - (int)strlen(pacman_name)) / 2 - 1;
+    if (isatty(STDOUT_FILENO) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 && w.ws_col > 0) {
+        term_width = w.ws_col;
+    }
+
+    int n = (term_width - 16 - (int)strlen(pacman_name)) / 2 - 1;
+    if (n < 0) n = 0;
     printf(AQUA BOLD "\n");
     for (int i = 0; i < n; i++) printf("=");
     printf(WHITE " [ Updating : %s ] " AQUA, pacman_name);
@@ -41,7 +48,7 @@ void on_pacman_found_and_start_execution(const char* pacman_name) {
     printf("\n\n"RESET);
 }
 
-void on_pacman_not_found() {
+void on_pacman_not_found(void) {
     printf(
         RED BOLD
         "[✗] Package manager not found\n"
@@ -76,7 +83,7 @@ void on_command_exec(const pacman_command_t command) {
 void on_command_execution_error(const int error_code) {
     printf(
         RED BOLD
-        "[✗] Command execution failed :"
+        "[✗] Command execution failed:"
         YELLOW " %d\n\n"
         RESET,
         error_code
@@ -104,10 +111,10 @@ pacman_executor_feedback_t feedback = {
 
 
 void print_help(const char* program_name) {
-    printf("Usage : %s [OPTIONS]\n", program_name);
-    printf("  -l, --list       Display packages manager list\n");
+    printf("Usage: %s [OPTIONS]\n", program_name);
+    printf("  -l, --list       Display package managers list\n");
     printf("  -p, --poweroff   Shutdown the system after execution\n");
-    printf("  -h, --help       Display help information\n");
+    printf("  -h, --help       Display this help message\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -139,7 +146,7 @@ int main(int argc, char *argv[]) {
                 help = true;
                 break;
             default:
-                help = true;
+                print_help(argv[0]);
                 return 1;
         }
     }
@@ -168,16 +175,42 @@ int main(int argc, char *argv[]) {
     }
 
     if (execute) {
-        pacmans_execute(pacmans, nb_pacmans, &feedback);
+        if (pacmans_execute(pacmans, nb_pacmans, &feedback) == -1) {
+            fprintf(stderr, "Error executing pacmans\n");
+            return EXIT_FAILURE;
+        }
     }
 
     if (poweroff && execute) {
-        printf(GREEN BOLD "[✓] Shutting down the system..." RESET "\n");
+        if (poweroff && execute) {
+            printf(GREEN BOLD "[✓] Shutting down the system in 5 seconds..." RESET "\n");
         #ifdef DEBUG
-        system("echo 'shutdown now'");
+            const char *args[] = {"/bin/echo", "shutdown", "now", NULL};
         #else
-        system("sleep 5 && shutdown now");
+            sleep(5);
+            const char *args[] = {"/sbin/shutdown", "now", NULL};
         #endif
+            pid_t pid = fork();
+            if (pid < 0) {
+                perror("fork");
+                return EXIT_FAILURE;
+            }
+            if (pid == 0) {
+                execv(args[0], (char *const *)args);
+                perror("execv");
+                _exit(EXIT_FAILURE);
+            }
+            int status;
+            if (waitpid(pid, &status, 0) == -1) {
+                perror("waitpid");
+                return EXIT_FAILURE;
+            }
+            if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+                fprintf(stderr, RED BOLD "[✗] Shutdown command failed (exit status %d)\n" RESET,
+                        WIFEXITED(status) ? WEXITSTATUS(status) : -1);
+                return EXIT_FAILURE;
+            }
+        }
     }
     return 0;
 }
