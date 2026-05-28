@@ -51,15 +51,15 @@ static int pacman_execute(pacman_t* pacman, const pacman_executor_feedback_t* fe
 
     /* UPDATE */
     res = pacman_execute_command(pacman, PACMAN_UPGRADE_CMD, feedback);
-    if (res != 0) return res;
+    if (res == -1) return res;
 
     /* CLEAN ORPHANS */
     res = pacman_execute_command(pacman, PACMAN_CLEAN_ORPHANS_CMD, feedback);
-    if (res != 0) return res;
+    if (res == -1) return res;
 
     /* CLEAN CACHE */
     res = pacman_execute_command(pacman, PACMAN_CLEAN_CACHE_CMD, feedback);
-    if (res != 0) return res;
+    if (res == -1) return res;
     return 0;
 
 }
