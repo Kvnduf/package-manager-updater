@@ -11,7 +11,7 @@ static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
     
     json_primitive_binding_t expected_fields[] = {
         {"name", JSON_STRING, pacman->name, sizeof(pacman->name)},
-        {"nameCmd", JSON_STRING, pacman->commands[PACMAN_NAME_CMD], sizeof(pacman->commands[PACMAN_NAME_CMD])},
+        {"nameCmd", JSON_STRING, pacman->nameCmd, sizeof(pacman->nameCmd)},
         {"upgradeCmd", JSON_STRING, pacman->commands[PACMAN_UPGRADE_CMD], sizeof(pacman->commands[PACMAN_UPGRADE_CMD])},
         {"cleanOrphansCmd", JSON_STRING, pacman->commands[PACMAN_CLEAN_ORPHANS_CMD], sizeof(pacman->commands[PACMAN_CLEAN_ORPHANS_CMD])},
         {"cleanCacheCmd", JSON_STRING, pacman->commands[PACMAN_CLEAN_CACHE_CMD], sizeof(pacman->commands[PACMAN_CLEAN_CACHE_CMD])}
