@@ -12,8 +12,8 @@ typedef enum {
     JSON_NULL
 } json_primitive_type_t;
 
-typedef struct __attribute__((packed))  {
-    char* json_field_name;
+typedef struct {
+    const char* json_field_name;
     json_primitive_type_t type;
     void *field_ptr;
     size_t field_size;
@@ -28,7 +28,7 @@ typedef struct __attribute__((packed))  {
  * @param type  the type of the json field value to bind
  * @param field_ptr  a pointer to the field where the deserialized value will be stored
  * @param field_size  the size of the field where the deserialized value will be stored
- * @return int  0 on success, 1 if an error occurred during initialization, -1 if an error occurred
+ * @return int  0 on success, -1 if an error occurred
  */
 int json_primitive_binding_init(json_primitive_binding_t* binding, char* json_field_name, json_primitive_type_t type, void* field_ptr, size_t field_size);
 

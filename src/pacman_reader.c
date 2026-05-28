@@ -17,7 +17,7 @@ static int read_pacman_from_json_item(const cJSON* json, pacman_t* pacman) {
         {"cleanCacheCmd", JSON_STRING, pacman->commands[PACMAN_CLEAN_CACHE_CMD], sizeof(pacman->commands[PACMAN_CLEAN_CACHE_CMD])}
     };
 
-    for (size_t i = 0; i < sizeof(expected_fields) / sizeof(json_primitive_binding_t); i++) {
+    for (size_t i = 0; i < sizeof(expected_fields) / sizeof(expected_fields[0]); i++) {
         if (json_primitive_binding_deserialize(json, &expected_fields[i]) != 0) {
             return 1;
         }

@@ -42,6 +42,7 @@ int json_primitive_binding_deserialize(const cJSON* json, json_primitive_binding
         break;
     case JSON_NULL:
         if (!cJSON_IsNull(field)) return 1;
+        if (binding->field_size != sizeof(void*)) return -1;
         *(void**)binding->field_ptr = NULL;
         break;
     default:
