@@ -3,6 +3,7 @@
 
 
 #define MAX_PATH_LENGTH 512
+#define MAX_COMMAND_LENGTH 256
 
 #define CONFIG_DIRNAME "package-manager-updater"
 #define PACMANS_FILENAME "pacmans.json"
