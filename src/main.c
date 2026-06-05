@@ -195,7 +195,7 @@ int main(int argc, char *argv[]) {
         #endif
 
         #if defined(DBUS_WAKELOCK)
-        if (!wakelock.is_supported()) {
+        if (wakelock_enabled && !wakelock.is_supported()) {
             fprintf(stderr, "%s is not supported on this system\n", wakelock.name);
             wakelock_enabled = false;
         }
