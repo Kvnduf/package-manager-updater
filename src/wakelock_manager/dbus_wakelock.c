@@ -13,19 +13,25 @@ static bool dbus_wakelock_is_supported(void)
     DBusError err;
     dbus_error_init(&err);
 
-    DBusConnection *conn =
-        dbus_bus_get(DBUS_BUS_SESSION, &err);
-
-    if (!conn)
+    DBusConnection *conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
+    if (!conn) {
+        if (dbus_error_is_set(&err))
+            dbus_error_free(&err);
         return false;
+    }
+    dbus_bool_t has_owner = dbus_bus_name_has_owner(
+        conn,
+        "org.freedesktop.ScreenSaver",
+        &err);
 
-    bool has_owner =
-        dbus_bus_name_has_owner(
-            conn,
-            "org.freedesktop.ScreenSaver",
-            &err);
+    if (dbus_error_is_set(&err)) {
+        dbus_error_free(&err);
+        dbus_connection_unref(conn);
+        return false;
+    }
 
-    return has_owner;
+    dbus_connection_unref(conn);
+    return has_owner ? true : false;
 }
 
 static int dbus_wakelock_acquire(void)
@@ -54,22 +60,30 @@ static int dbus_wakelock_acquire(void)
     const char *app = "com.example.player";
     const char *reason = "Playback active";
 
-    dbus_message_append_args(
-        msg,
-        DBUS_TYPE_STRING, &app,
-        DBUS_TYPE_STRING, &reason,
-        DBUS_TYPE_INVALID);
+    if (!dbus_message_append_args(
+            msg,
+            DBUS_TYPE_STRING, &app,
+            DBUS_TYPE_STRING, &reason,
+            DBUS_TYPE_INVALID))
+    {
+        dbus_message_unref(msg);
+        return -1;
+    }
 
+    const int timeout_ms = 5000;
     reply = dbus_connection_send_with_reply_and_block(
         g_conn,
         msg,
-        -1,
+        timeout_ms,
         &err);
 
     dbus_message_unref(msg);
 
-    if (!reply)
+    if (!reply) {
+        if (dbus_error_is_set(&err))
+            dbus_error_free(&err);
         return -1;
+    }
 
     if (!dbus_message_get_args(
             reply,
@@ -77,6 +91,8 @@ static int dbus_wakelock_acquire(void)
             DBUS_TYPE_UINT32, &g_cookie,
             DBUS_TYPE_INVALID))
     {
+        if (dbus_error_is_set(&err))
+            dbus_error_free(&err);
         dbus_message_unref(reply);
         return -1;
     }
@@ -106,25 +122,35 @@ static int dbus_wakelock_release(void)
     if (!msg)
         return -1;
 
-    dbus_message_append_args(
-        msg,
-        DBUS_TYPE_UINT32, &g_cookie,
-        DBUS_TYPE_INVALID);
+    if (!dbus_message_append_args(
+            msg,
+            DBUS_TYPE_UINT32, &g_cookie,
+            DBUS_TYPE_INVALID))
+    {
+        dbus_message_unref(msg);
+        return -1;
+    }
+    const int timeout_ms = 5000;
 
     reply = dbus_connection_send_with_reply_and_block(
         g_conn,
         msg,
-        -1,
+        timeout_ms,
         &err);
 
     dbus_message_unref(msg);
 
-    if (!reply)
+    if (!reply) {
+        if (dbus_error_is_set(&err))
+            dbus_error_free(&err);
         return -1;
+    }
 
     dbus_message_unref(reply);
 
     g_cookie = 0;
+    dbus_connection_unref(g_conn);
+    g_conn = NULL;
 
     return 0;
 }
