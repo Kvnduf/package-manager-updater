@@ -44,8 +44,11 @@ static int dbus_wakelock_acquire(void)
 
     if (!g_conn) {
         g_conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
-        if (!g_conn)
+        if (!g_conn) {
+            if (dbus_error_is_set(&err))
+                dbus_error_free(&err);
             return -1;
+        }
     }
 
     msg = dbus_message_new_method_call(
@@ -57,8 +60,8 @@ static int dbus_wakelock_acquire(void)
     if (!msg)
         return -1;
 
-    const char *app = "com.example.player";
-    const char *reason = "Playback active";
+    const char *app = "package-manager-updater";
+    const char *reason = "Updating packages";
 
     if (!dbus_message_append_args(
             msg,
