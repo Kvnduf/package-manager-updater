@@ -21,7 +21,7 @@ static int execute_command(const char *command) {
 
 static int pacman_check_existence(pacman_t* pacman) {
     if (!pacman) return -1;
-    char check_command[PACMAN_MAX_LINE_LENGTH];
+    char check_command[MAX_COMMAND_LENGTH];
     int n = snprintf(check_command, sizeof(check_command), "command -v %s > /dev/null 2>&1", pacman->nameCmd);
     if (n < 0 || (size_t)n >= sizeof(check_command)) return -1;
     return execute_command(check_command) == 0 ? 0 : 1;

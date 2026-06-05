@@ -8,6 +8,7 @@ INCLUDE_DIR = include
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
+OBJ_DIRS = $(OBJ_DIR)
 
 TARGET = updater
 
@@ -47,6 +48,14 @@ $(LIB_CJSON_OBJ_DIR)/%.o: $(LIB_CJSON_SRC_DIR)/%.c | $(LIB_CJSON_OBJ_DIR)
 $(LIB_CJSON_TARGET_PATH): $(LIB_CJSON_OBJS) | $(LIB_CJSON_BIN_DIR)
 	ar rcs $@ $^
 
+### Dbus library
+ifdef dbus_wakelock
+LDFLAGS += $(shell pkg-config --libs dbus-1)
+CPPFLAGS += -DDBUS_WAKELOCK $(shell pkg-config --cflags dbus-1)
+OBJ_DIRS += $(OBJ_DIR)/wakelock_manager
+OBJS += $(OBJ_DIR)/wakelock_manager/dbus_wakelock.o
+endif
+
 ### Main build rules
 
 ifdef debug
@@ -54,11 +63,11 @@ CFLAGS += -g
 CPPFLAGS += -DDEBUG
 endif
 
-$(BIN_DIR) $(OBJ_DIR) : 
+$(BIN_DIR) $(OBJ_DIRS) : 
 	mkdir -p $@
 
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIRS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 $(TARGET_PATH): $(LIB_CJSON_TARGET_PATH) $(OBJS) | $(BIN_DIR)

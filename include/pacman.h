@@ -1,9 +1,9 @@
 #ifndef PACMAN_H
 #define PACMAN_H
 #include <stddef.h>
+#include "config.h"
 
 #define PACMAN_NAME_MAX 32
-#define PACMAN_MAX_LINE_LENGTH 256
 
 /**
  * @brief Struct representing a package manager with its name and associated commands.
@@ -22,8 +22,8 @@ typedef enum {
 
 typedef struct {
    char name[PACMAN_NAME_MAX];
-   char nameCmd[PACMAN_MAX_LINE_LENGTH];
-   char commands[PACMAN_NB_COMMAND][PACMAN_MAX_LINE_LENGTH];
+   char nameCmd[MAX_COMMAND_LENGTH];
+   char commands[PACMAN_NB_COMMAND][MAX_COMMAND_LENGTH];
 } pacman_t;
 
 void pacman_init(pacman_t* pacman);

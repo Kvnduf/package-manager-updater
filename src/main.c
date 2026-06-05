@@ -13,6 +13,11 @@
 #include <sys/wait.h>
 
 
+#ifdef DBUS_WAKELOCK
+#include "wakelock_manager/dbus_wakelock.h"
+#endif
+
+
 /* Define feedback functions for pacman_executor */
 
 #define RESET   "\x1b[0m"
@@ -175,7 +180,40 @@ int main(int argc, char *argv[]) {
     }
 
     if (execute) {
-        if (pacmans_execute(pacmans, nb_pacmans, &feedback) == -1) {
+
+        #if defined(DBUS_WAKELOCK)
+        wakelock_t wakelock;
+        bool wakelock_enabled = true;
+        bool wakelock_success = false;
+        #endif
+
+        #ifdef DBUS_WAKELOCK
+        if (dbus_wakelock_init(&wakelock) != 0) {
+            fprintf(stderr, "Failed to initialize DBus wakelock\n");
+            wakelock_enabled = false;
+        }
+        #endif
+
+        #if defined(DBUS_WAKELOCK)
+        if (wakelock_enabled && !wakelock.is_supported()) {
+            fprintf(stderr, "%s is not supported on this system\n", wakelock.name);
+            wakelock_enabled = false;
+        }
+        
+        if (wakelock_enabled) {
+            wakelock_success =  wakelock.acquire() == 0;
+            if (!wakelock_success) {
+                fprintf(stderr, RED BOLD "[✗] Failed to acquire wakelock\n" RESET);
+            } 
+        }
+        #endif
+        int exec_res = pacmans_execute(pacmans, nb_pacmans, &feedback);
+        #if defined(DBUS_WAKELOCK)
+        if (wakelock_enabled && wakelock_success && wakelock.release() != 0) {
+            fprintf(stderr, RED BOLD "[✗] Failed to release wakelock\n" RESET);
+        }
+        #endif
+        if (exec_res == -1) {
             fprintf(stderr, "Error executing pacmans\n");
             return EXIT_FAILURE;
         }
