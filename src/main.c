@@ -125,25 +125,6 @@ void print_help(const char* program_name) {
 int main(int argc, char *argv[]) {
     int opt;
 
-    #if defined(DBUS_WAKELOCK)
-    wakelock_t wakelock;
-    bool wakelock_enabled = true;
-    bool wakelock_success = false;
-    #endif
-
-    #ifdef DBUS_WAKELOCK
-    if (dbus_wakelock_init(&wakelock) != 0) {
-        fprintf(stderr, "Failed to initialize DBus wakelock\n");
-        wakelock_enabled = false;
-    }
-    #endif
-
-    #if defined(DBUS_WAKELOCK)
-    if (!wakelock.is_supported()) {
-        fprintf(stderr, "%s is not supported on this system\n", wakelock.name);
-        wakelock_enabled = false;
-    }
-    #endif
     
     bool poweroff = false;
     bool list = false;
@@ -199,7 +180,26 @@ int main(int argc, char *argv[]) {
     }
 
     if (execute) {
+
         #if defined(DBUS_WAKELOCK)
+        wakelock_t wakelock;
+        bool wakelock_enabled = true;
+        bool wakelock_success = false;
+        #endif
+
+        #ifdef DBUS_WAKELOCK
+        if (dbus_wakelock_init(&wakelock) != 0) {
+            fprintf(stderr, "Failed to initialize DBus wakelock\n");
+            wakelock_enabled = false;
+        }
+        #endif
+
+        #if defined(DBUS_WAKELOCK)
+        if (!wakelock.is_supported()) {
+            fprintf(stderr, "%s is not supported on this system\n", wakelock.name);
+            wakelock_enabled = false;
+        }
+        
         if (wakelock_enabled) {
             wakelock_success =  wakelock.acquire() == 0;
             if (!wakelock_success) {
